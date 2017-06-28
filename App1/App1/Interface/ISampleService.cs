@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App1.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace App1.Interface
 {
     public interface ISampleService
     {
-        Task<string> GetSomeDummyData();
-        string SomeDummyString();
+        Task<SampleModel> GetSomeDummyData(Dictionary<string, string> parameters);
+        string SomeDummyString(string btnText);
     }
 }

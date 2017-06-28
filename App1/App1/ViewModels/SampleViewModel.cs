@@ -39,7 +39,7 @@ namespace App1.ViewModels
 
         private bool CanExecuteEntryTextCommand()
         {
-            if (!string.IsNullOrWhiteSpace(Entry1))
+            if (!string.IsNullOrWhiteSpace(Entry1) || !string.IsNullOrWhiteSpace(Entry2))
                 return true;
             return false;
         }
@@ -47,6 +47,23 @@ namespace App1.ViewModels
         private void Entry1_OnTextChanged()
         {
             System.Diagnostics.Debug.WriteLine(Entry1);
+            System.Diagnostics.Debug.WriteLine(Entry2);
+        }
+
+        private string _Entry2 = string.Empty;
+        public string Entry2
+        {
+            get { return _Entry2; }
+            set
+            {
+                if (_Entry2 == value)
+                    return;
+                _Entry2 = value;
+                OnPropertyChanged("_Entry2");
+
+                if (TextChangedComand.CanExecute(null))
+                    TextChangedComand.Execute(null);
+            }
         }
 
         private string _currentBtnText = string.Empty;
@@ -65,22 +82,31 @@ namespace App1.ViewModels
 
         public ICommand ButtonCommand { get; set; }
 
-        private ISampleService _sampleService;
+        public ISampleService _sampleService;
 
         public SampleViewModel()
         {
             _sampleService = DependencyService.Get<ISampleService>();
-
+            int sumOfbtns = 0;
             ButtonCommand = new Command((e) =>
             {
                 var btn = e as Button;
                 if (btn != null)
                 {
                     CurrentBtnText = btn.Text;
+                    sumOfbtns = sumOfbtns + int.Parse(btn.Text);
+                    Entry1 = sumOfbtns.ToString();
 
-                    System.Diagnostics.Debug.WriteLine(CurrentBtnText);
+                    GetSampleString(CurrentBtnText);
                 }
             });
+        }
+
+        private void GetSampleString(string btnText)
+        {
+            var resp = _sampleService.SomeDummyString(btnText);
+
+            System.Diagnostics.Debug.WriteLine(resp);
         }
     }
 }
